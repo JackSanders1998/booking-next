@@ -1,25 +1,21 @@
 import Layout from "../../components/layout";
-
-const venues = [
-    {
-        id: '1',
-        name: 'The Chicago Theater',
-        city: 'Chicago',
-    },
-    {
-        id: '2',
-        name: 'The Portland Theater',
-        city: 'Portland',
-    },
-    {
-        id: '3',
-        name: 'The New York Theater',
-        city: 'New York',
-    },
-    // More venues...
-]
+import {Venue} from "../api/venues/get-all-venues";
+import {useEffect, useState} from "react";
+import {useSession} from "next-auth/react";
 
 export default function VenuesPage() {
+    const { data: session } = useSession()
+    const [venues, setVenues] = useState<Venue[]>([])
+
+    // Fetch venues
+    useEffect(() => {
+        const fetchData = async () => {
+            const res = await fetch('/api/venues/get-all-venues')
+            setVenues(await res.json())
+        }
+        fetchData()
+    }, [session])
+
     return (
         <Layout>
             <ul role="list" className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
