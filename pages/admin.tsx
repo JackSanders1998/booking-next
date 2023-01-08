@@ -1,6 +1,6 @@
 import Layout from "../components/layout"
 
-export default function Page() {
+export default function AdminPage() {
   return (
     <Layout>
       <h1>This page is protected by Middleware</h1>
