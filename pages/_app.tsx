@@ -10,6 +10,7 @@ export default function App({
   Component,
   pageProps: { session, ...pageProps },
 }: AppProps<{ session: Session }>) {
+  console.log(`database url: ${process.env.DATABASE_URL}`);
   return (
     <SessionProvider session={session}>
       <Component {...pageProps} />
