@@ -1,20 +1,29 @@
 import Layout from "../../components/layout";
-import {Venue} from "../api/venues/get-all-venues";
-import {useEffect, useState} from "react";
-import {useSession} from "next-auth/react";
+// import {useSession} from "next-auth/react";
+import {PrismaClient} from "@prisma/client";
 
-export default function VenuesPage() {
-    const { data: session } = useSession()
-    const [venues, setVenues] = useState<Venue[]>([])
+const prisma = new PrismaClient();
 
-    // Fetch venues
-    useEffect(() => {
-        const fetchData = async () => {
-            const res = await fetch('/api/venues/get-all-venues')
-            setVenues(await res.json())
-        }
-        fetchData()
-    }, [session])
+export interface Venue {
+    id:             number,
+    title:          string,
+    description:    string,
+
+}
+
+export const getServerSideProps = async (): Promise<{props: { venues: Venue[]}}> => {
+    // Get all venues
+    const venues = await prisma.venue.findMany();
+    // Pass the data to the VenuesPage
+    return {
+        props: {
+            venues: JSON.parse(JSON.stringify(venues)),
+        },
+    };
+}
+
+export default function VenuesPage({ venues = [] }: {venues: Venue[]}) {
+    // const { data: session } = useSession()
 
     return (
         <Layout>
@@ -25,8 +34,8 @@ export default function VenuesPage() {
                         className="col-span-1 flex flex-col divide-y divide-gray-200 rounded-lg bg-white text-center shadow"
                     >
                         <div className="flex flex-1 flex-col p-2">
-                            <h3 className="mt-2 text-sm font-medium text-gray-900">{venue.name}</h3>
-                            <p className="text-sm text-gray-500">{venue.city}</p>
+                            <h3 className="mt-2 text-sm font-medium text-gray-900">{venue.title}</h3>
+                            <p className="text-sm text-gray-500">{venue.description}</p>
                         </div>
                     </li>
                 ))}
