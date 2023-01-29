@@ -1,81 +1,82 @@
-import NextAuth, { NextAuthOptions } from "next-auth"
-import GoogleProvider from "next-auth/providers/google"
-import FacebookProvider from "next-auth/providers/facebook"
-import GithubProvider from "next-auth/providers/github"
-import TwitterProvider from "next-auth/providers/twitter"
-import Auth0Provider from "next-auth/providers/auth0"
+import NextAuth from 'next-auth';
+import EmailProvider from 'next-auth/providers/email';
+import GoogleProvider from 'next-auth/providers/google';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
-import prisma from "../../../lib/prismadb"
-// import AppleProvider from "next-auth/providers/apple"
-// import EmailProvider from "next-auth/providers/email"
+import prisma from '@/lib/prisma';
+import nodemailer from 'nodemailer';
+import Handlebars from 'handlebars';
+import { readFileSync } from 'fs';
+import path from 'path';
 
-// For more information on each option (and a full list of options) go to
-// https://next-auth.js.org/configuration/options
-export const authOptions: NextAuthOptions = {
-  // https://next-auth.js.org/configuration/providers/oauth
-  adapter: PrismaAdapter(prisma),
+// Email sender
+const transporter = nodemailer.createTransport({
+  host: process.env.EMAIL_SERVER_HOST,
+  port: Number(process.env.EMAIL_SERVER_PORT) || 0,
+  auth: {
+    user: process.env.EMAIL_SERVER_USER,
+    pass: process.env.EMAIL_SERVER_PASSWORD,
+  },
+  secure: true,
+});
+
+const emailsDir = path.resolve(process.cwd(), 'emails');
+
+const sendVerificationRequest = async ({ identifier: email, url }): void => {
+  const emailFile = readFileSync(path.join(emailsDir, 'confirm-email.html'), {
+    encoding: 'utf8',
+  });
+  const emailTemplate = Handlebars.compile(emailFile);
+  await transporter.sendMail({
+    from: `"✨ amp" ${process.env.EMAIL_FROM}`,
+    to: identifier,
+    subject: 'Your sign-in link for amp',
+    html: emailTemplate({
+      base_url: process.env.NEXTAUTH_URL,
+      signin_url: url,
+      email: identifier,
+    }),
+  });
+};
+
+const sendWelcomeEmail = async ({ user }) => {
+  const { email } = user;
+
+  try {
+    const emailFile = readFileSync(path.join(emailsDir, 'welcome.html'), {
+      encoding: 'utf8',
+    });
+    const emailTemplate = Handlebars.compile(emailFile);
+    await transporter.sendMail({
+      from: `"✨ amp" ${process.env.EMAIL_FROM}`,
+      to: email,
+      subject: 'Welcome to amp! 🎉',
+      html: emailTemplate({
+        base_url: process.env.NEXTAUTH_URL,
+        support_email: 'support@amp.com',
+      }),
+    });
+  } catch (error) {
+    console.log(`❌ Unable to send welcome email to user (${email})`);
+  }
+};
+
+export default NextAuth({
+  pages: {
+    signIn: '/',
+    signOut: '/',
+    error: '/',
+    verifyRequest: '/',
+  },
   providers: [
-    /* EmailProvider({
-         server: process.env.EMAIL_SERVER,
-         from: process.env.EMAIL_FROM,
-       }),
-    // Temporarily removing the Apple provider from the demo site as the
-    // callback URL for it needs updating due to Vercel changing domains
-
-    Providers.Apple({
-      clientId: process.env.APPLE_ID,
-      clientSecret: {
-        appleId: process.env.APPLE_ID,
-        teamId: process.env.APPLE_TEAM_ID,
-        privateKey: process.env.APPLE_PRIVATE_KEY,
-        keyId: process.env.APPLE_KEY_ID,
-      },
-    }),
-    */
-    FacebookProvider({
-      clientId: process.env.FACEBOOK_ID ?? "",
-      clientSecret: process.env.FACEBOOK_SECRET ?? "",
-    }),
-    GithubProvider({
-      clientId: process.env.GITHUB_ID ?? "",
-      clientSecret: process.env.GITHUB_SECRET ?? "",
+    EmailProvider({
+      maxAge: 10 * 60,
+      sendVerificationRequest,
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID ?? "",
-      clientSecret: process.env.GOOGLE_SECRET ?? "",
-    }),
-    TwitterProvider({
-      clientId: process.env.TWITTER_ID ?? "",
-      clientSecret: process.env.TWITTER_SECRET ?? "",
-    }),
-    Auth0Provider({
-      clientId: process.env.AUTH0_ID ?? "",
-      clientSecret: process.env.AUTH0_SECRET ?? "",
-      issuer: process.env.AUTH0_ISSUER ?? "",
+      clientId: process.env.GOOGLE_ID || '',
+      clientSecret: process.env.GOOGLE_SECRET || '',
     }),
   ],
-  theme: {
-    colorScheme: "light",
-  },
-  callbacks: {
-    // async session({session, token, user}) {
-    //   session.user.role = user.role; // Add role value to user object so it is passed along with session
-    //   return session;
-    // },
-    async jwt({ token, user, account }) {
-      if (account?.accessToken) {
-        token.accessToken = account.accessToken
-      }
-      if (user) {
-        if (user.role) {
-          token.roles = user.role
-        }
-      }
-      return token
-      // token.userRole = "admin"
-      // return token
-    },
-  },
-}
-
-export default NextAuth(authOptions)
+  adapter: PrismaAdapter(prisma),
+  events: { createUser: sendWelcomeEmail },
+});
