@@ -12,7 +12,7 @@ export interface Venue {
 }
 
 export const getServerSideProps = async (): Promise<{props: { venues: Venue[]}}> => {
-    // Get all venues
+    // Get all venue
     const venues = await prisma.venue.findMany();
     // Pass the data to the VenuesPage
     return {

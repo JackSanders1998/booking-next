@@ -22,7 +22,7 @@ import CreateVenueForm from "../../components/createVenueForm";
 // }
 
 const Create = () => {
-    // const addVenue = data => axios.post('/api/venues', data);
+    // const addVenue = data => axios.post('/api/venue', data);
 
     return (
         <div className="max-w-screen-sm mx-auto">

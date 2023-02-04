@@ -1,14 +1,4 @@
-import { PrismaClient } from "@prisma/client"
-
-// declare global {
-//     var prisma: PrismaClient | undefined
-// }
-//
-const client = globalThis.prisma || new PrismaClient()
-if (process.env.NODE_ENV !== "production") globalThis.prisma = client
-
-
-
+import { PrismaClient } from "@prisma/client";
 
 // Docs about instantiating `PrismaClient` with Next.js:
 // https://pris.ly/d/help/next-js-best-practices
@@ -16,7 +6,6 @@ if (process.env.NODE_ENV !== "production") globalThis.prisma = client
 declare global {
     var prisma: PrismaClient | undefined
 }
-
 if (process.env.NODE_ENV === "production") {
     prisma = new PrismaClient();
 } else {

@@ -26,7 +26,7 @@ const venues: Venue[] = [
         name: 'The New York Theater',
         city: 'New York',
     },
-    // More venues...
+    // More venue...
 ];
 
 export default function handler(
