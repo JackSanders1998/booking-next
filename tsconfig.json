@@ -3,7 +3,7 @@
     "target": "es5",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["/*"],
+      "@/*": ["./*"],
     },
     "lib": [
       "dom",
@@ -31,7 +31,7 @@
   "include": [
     "process.d.ts",
     "next-env.d.ts",
-    "next-auth.d.ts",
+    "types/next-auth.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts"
