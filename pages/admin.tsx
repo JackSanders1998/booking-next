@@ -1,4 +1,4 @@
-import Layout from "../components/layout"
+import Layout from "../components/Layout";
 
 export default function AdminPage() {
   return (
@@ -13,5 +13,5 @@ export default function AdminPage() {
         .
       </p>
     </Layout>
-  )
+  );
 }

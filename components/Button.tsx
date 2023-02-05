@@ -23,7 +23,7 @@ interface ButtonProps {
   variant?: Variant;
   color?: Color;
   className?: string;
-  type: ButtonType | undefined;
+  type?: ButtonType;
   href?: string;
   children: ReactNode;
 }
