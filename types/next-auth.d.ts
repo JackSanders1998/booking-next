@@ -28,14 +28,3 @@ declare module "next-auth/jwt" {
     role?: Role;
   }
 }
-
-export enum Color {
-  "SLATE" = "slate",
-  "BLUE" = "blue",
-  "WHITE" = "white",
-}
-
-export enum Variant {
-  "SOLID" = "solid",
-  "OUTLINE" = "outline",
-}

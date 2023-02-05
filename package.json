@@ -13,6 +13,7 @@
     "prisma:studio": "dotenv -e .env.local prisma studio"
   },
   "dependencies": {
+    "@headlessui/react": "^1.7.9",
     "@heroicons/react": "^2.0.13",
     "@next-auth/prisma-adapter": "^1.0.5",
     "@prisma/client": "^4.9.0",
