@@ -8,7 +8,7 @@ import { Hero } from "@/components/Hero";
 import { Pricing } from "@/components/Pricing";
 import { PrimaryFeatures } from "@/components/PrimaryFeatures";
 import { SecondaryFeatures } from "@/components/SecondaryFeatures";
-import Layout from "@/components/layout";
+import Layout from "@/components/Layout";
 
 export default function Home() {
   return (
