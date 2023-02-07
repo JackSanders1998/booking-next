@@ -8,6 +8,7 @@
       "@/types/*": ["types/*"],
       "@/lib/*": ["lib/*"],
       "@/images/*": ["images/*"],
+      "@/styles/*": ["styles/*"],
     },
     "lib": [
       "dom",

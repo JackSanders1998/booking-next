@@ -1,5 +1,5 @@
 import Layout from "@/components/Layout";
-import { Venue } from "../api/venue/get-all-beta";
+import { Venue } from "../api/venue/beta";
 
 import React from "react";
 import { GetServerSideProps } from "next";
