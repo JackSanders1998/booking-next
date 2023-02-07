@@ -30,6 +30,7 @@ import Router from "next/router";
 //   Router.push("/");
 // }
 
+
 export default function VenuePage({ id, name, city }: Venue) {
   return (
     <Layout>
