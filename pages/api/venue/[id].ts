@@ -2,6 +2,16 @@ import HttpStatusCode from "@/types/status-codes";
 import { Venue } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
 
+/**
+ * @swagger
+ * /venue/{venueId}:
+ *   get:
+ *     tags: [Venue]
+ *     description: GET a venue by ID
+ *     responses:
+ *       200:
+ *         description: OK
+ */
 async function handleGET(id: string, res: NextApiResponse) {
   try {
     const venue = await prisma.venue.findUnique({
@@ -14,6 +24,16 @@ async function handleGET(id: string, res: NextApiResponse) {
   }
 }
 
+/**
+ * @swagger
+ * /venue/{venueId}:
+ *   delete:
+ *     tags: [Venue]
+ *     description: DELETE a venue by ID
+ *     responses:
+ *       200:
+ *         description: OK
+ */
 async function handleDELETE(id: string, res: NextApiResponse) {
   try {
     const venue = await prisma.venue.delete({
