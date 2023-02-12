@@ -1,13 +1,20 @@
 import HttpStatusCode from "@/types/status-codes";
 import { Venue } from "@prisma/client";
 import type { NextApiRequest, NextApiResponse } from "next";
+import _ from 'lodash';
 
 /**
  * @swagger
- * /venue/{venueId}:
+ * /api/venue/{id}:
  *   get:
  *     tags: [Venue]
  *     description: GET a venue by ID
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *        schema:
+ *          type: string
+ *          required: true
  *     responses:
  *       200:
  *         description: OK
@@ -17,7 +24,7 @@ async function handleGET(id: string, res: NextApiResponse) {
     const venue = await prisma.venue.findUnique({
       where: { id },
     })
-    if (!venue) res.status(HttpStatusCode.NOT_FOUND).json(id);
+    if (_.isEmpty(venue)) {res.status(HttpStatusCode.NOT_FOUND).json({'500': id})};
     res.status(HttpStatusCode.OK).json(venue)
   } catch (error) {
     res.status(HttpStatusCode.INTERNAL_SERVER_ERROR).json(error)
