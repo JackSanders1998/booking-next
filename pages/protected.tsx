@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import Layout from "../components/Layout";
 import AccessDenied from "../components/access-denied";
+import { Role } from "@/types/next-auth";
 
 export default function ProtectedPage() {
   const { data: session } = useSession();
@@ -20,7 +21,7 @@ export default function ProtectedPage() {
   }, [session]);
 
   // If no session exists, display access denied message
-  if (!session) {
+  if (session?.role === Role.ADMIN) {
     return (
       <Layout>
         <AccessDenied />

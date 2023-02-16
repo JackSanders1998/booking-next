@@ -4,7 +4,7 @@ import { JWT } from "next-auth/jwt";
 
 // Read more at: https://next-auth.js.org/getting-started/typescript#module-augmentation
 
-enum Role {
+export enum Role {
   "ADMIN" = "ADMIN",
   "ARTIST" = "ARTIST",
   "VENUE" = "VENUE",
