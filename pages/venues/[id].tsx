@@ -1,4 +1,4 @@
-import Layout from "@/components/Layout";
+import Layout from "@/components/layouts/Layout";
 import { Venue } from "../api/venue/beta";
 
 import React, { useEffect, useState } from "react";

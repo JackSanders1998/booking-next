@@ -1,31 +1,12 @@
-import Layout from "@/components/Layout";
-import { PrismaClient } from "@prisma/client";
+import Layout from "@/components/layouts/Layout";
+import { Venue } from "@prisma/client";
 import Link from "next/link";
+import _ from 'lodash';
 
-const prisma = new PrismaClient();
-
-export interface Venue {
-  id: number;
-  title: string;
-  description: string;
-}
-
-export const getServerSideProps = async (): Promise<{
-  props: { venues: Venue[] };
-}> => {
-  // Get all venue
-  const venues = await prisma.venue.findMany();
-  // Pass the data to the VenuesPage
-  return {
-    props: {
-      venues: JSON.parse(JSON.stringify(venues)),
-    },
-  };
-};
-
-export default function VenuesPage({ venues = [] }: { venues: Venue[] }) {
-  // const { data: session } = useSession()
-
+const VenuesPage = ({ venues = [] }: { venues: Venue[] }) => {
+  if (_.isEmpty(venues)) {
+    return <Layout>loading</Layout>
+  }
   return (
     <Layout>
       <ul
@@ -52,3 +33,18 @@ export default function VenuesPage({ venues = [] }: { venues: Venue[] }) {
     </Layout>
   );
 }
+
+export const getServerSideProps = async (): Promise<{
+  props: { venues: Venue[] };
+}> => {
+  // Get all venues
+  const venues = await prisma.venue.findMany();
+  console.log(venues);
+  // Pass the data to the VenuesPage
+  return {
+    props: { venues: JSON.parse(JSON.stringify(venues)) },
+  };
+};
+
+
+export default VenuesPage
