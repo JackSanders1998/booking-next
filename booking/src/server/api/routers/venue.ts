@@ -3,16 +3,12 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 
 export const venueRouter = createTRPCRouter({
-  hello: publicProcedure
-    .input(z.object({ text: z.string() }))
-    .query(({ input }) => {
-      return {
-        greeting: `Hello ${input.text}`,
-      };
-    }),
-
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.venue.findMany();
+    return ctx.prisma.venue.findMany({
+      orderBy: {
+        createdAt: 'desc'
+      }
+    });
   }),
 
   getById: publicProcedure
@@ -21,7 +17,17 @@ export const venueRouter = createTRPCRouter({
     return ctx.prisma.venue.findUnique({where: {id: input.id}});
   }),
 
-  getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
+  new: publicProcedure
+  .input(z.object({
+    title: z.string(),
+    description: z.string(),
+    seats: z.number(),
+    published: z.boolean(),
+    ownerId: z.string(),
+  }))
+  .mutation(({ input, ctx }) => {
+    return ctx.prisma.venue.create({
+      data: input
+    });
   }),
 });

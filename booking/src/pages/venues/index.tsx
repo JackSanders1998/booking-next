@@ -1,14 +1,11 @@
 import Layout from "@/components/layouts/Layout";
-import { Venue } from "@prisma/client";
 import Link from "next/link";
 import _ from 'lodash';
 
 import { api } from "../../utils/api";
-import { useRouter } from "next/router";
 
 const VenuesPage = () => {
-  const {data: venues} = api.venue.getAll.useQuery(undefined)
-  console.log("ROUTER", useRouter())
+  const {data: venues} = api.venue.getAll.useQuery()
 
   if (_.isEmpty(venues) || venues === undefined) {
     return <Layout>loading</Layout>
