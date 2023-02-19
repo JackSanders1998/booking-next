@@ -11,6 +11,7 @@ const VenuePage = () => {
   const { id } = router.query
   const [ content , setContent ] = useState()
   const { data: session, status } = useSession()
+  console.log(id);
 
   const getVenue = async () => {
     const res = await ('/api/venue/cle1uci4b00022rncuo6dqg01')
