@@ -1,29 +1,62 @@
 import Layout from "@/components/layouts/Layout";
-import Link from "next/link";
-import _ from "lodash";
 
 import { api } from "../../utils/api";
 import { useSession } from "next-auth/react";
-import { Button } from "@/components/Button";
-
-const createVenue = async () => {
-  const venue = await api.venue.new.useMutation().mutateAsync({
-    title: "jack",
-    description: "jack",
-    seats: 24,
-    published: true,
-    ownerId: "clea6pjh800002rtqtxhdq69h",
-  });
-  return venue;
-};
+import { ChangeEvent, useState } from "react";
 
 const VenuesPage = () => {
-  const { data: session, status } = useSession();
-  console.log(session?.user.id);
+  const [title, setTitle] = useState('')
+  const [description, setDescription] = useState('')
+  const [seats, setSeats] = useState(0)
+  const { data: session } = useSession()
+  const utils = api.useContext()
+
+  const clearState = () => {
+    setTitle('')
+    setDescription('')
+    setSeats(0)
+  }
+
+  const postVenue = api.venue.new.useMutation({
+    /**
+     * ? Configure optimistic UI update
+     * @see https://trpc.io/docs/v10/useContext#helpers
+     */
+    onMutate: () => {
+      utils.venue.getAll.cancel();
+      const optimisticUpdate = utils.venue.getAll.getData();
+
+      if (optimisticUpdate) {
+        console.log(optimisticUpdate)
+        // utils.venue.getAll.setData(optimisticUpdate);
+      }
+    },
+
+    /**
+     * @see https://trpc.io/docs/v10/useContext#invalidating-a-single-query
+     */
+    onSettled: () => {
+      utils.venue.getAll.invalidate();
+    },
+  });
+
+  function handleSubmit() {
+    if (session?.user !== undefined) {
+      postVenue.mutate({
+        title,
+        description,
+        seats,
+        ownerId: session.user.id as string,
+        published: true,
+      });
+    } else {
+      console.log("error");
+    }
+  }
 
   return (
     <Layout>
-      <form className="space-y-8 divide-y divide-gray-200">
+      <div className="space-y-8 divide-y divide-gray-200">
         <div className="space-y-8 divide-y divide-gray-200 sm:space-y-5">
           <div className="space-y-6 sm:space-y-5">
             <div>
@@ -46,6 +79,9 @@ const VenuesPage = () => {
                 <div className="mt-1 sm:col-span-2 sm:mt-0">
                   <input
                     type="text"
+                    placeholder="title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
                     name="title"
                     id="title"
                     autoComplete="title"
@@ -63,11 +99,13 @@ const VenuesPage = () => {
                 </label>
                 <div className="mt-1 sm:col-span-2 sm:mt-0">
                   <textarea
-                    id="description"
+                    placeholder="description"
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
                     name="description"
+                    id="description"
                     rows={3}
                     className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
-                    defaultValue={""}
                   />
                   <p className="mt-2 text-sm text-gray-500">
                     Write a few sentences about your venue.
@@ -132,6 +170,9 @@ const VenuesPage = () => {
                 <div className="mt-1 sm:col-span-2 sm:mt-0">
                   <input
                     type="number"
+                    placeholder="0"
+                    value={seats}
+                    onChange={(e) => setSeats(Number(e.target.value))}
                     name="seats"
                     id="seats"
                     autoComplete="seats"
@@ -308,15 +349,14 @@ const VenuesPage = () => {
               Cancel
             </button>
             <button
-              onClick={() => createVenue()}
-              type="submit"
+              onClick={handleSubmit}
               className="ml-3 inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
             >
               Save
             </button>
           </div>
         </div>
-      </form>
+      </div>
     </Layout>
   );
 };
