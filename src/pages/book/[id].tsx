@@ -4,6 +4,7 @@ import Head from "next/head"
 import { useRouter } from "next/router"
 import { api } from "@/utils/api"
 import { Venue } from "@prisma/client"
+import { Calendar } from "@/components/Calendar/Calendar";
 
 export const BookVenue = ({venue}: {venue: Venue}) => {
   return (
@@ -23,6 +24,7 @@ export const BookVenue = ({venue}: {venue: Venue}) => {
             </p>
           </div>
         </div>
+        <Calendar />
           {/* <BookingTool /> */}
       </div>
     </>
