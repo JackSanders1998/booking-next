@@ -49,14 +49,6 @@ export const CalendarHeader = ({
           state.visibleRange.start.toDate(state.timeZone)
         )}
       </h2>
-      <h2
-        aria-hidden
-        className="flex-1 align-center font-bold text-xl text-center"
-      >
-        {monthDateFormatter.format(
-          state.visibleRange.start.add({ months: 1 }).toDate(state.timeZone)
-        )}
-      </h2>
       <Button {...nextButtonProps}>
         <ChevronRightIcon className="h-6 w-6" />
       </Button>

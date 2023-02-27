@@ -1,9 +1,9 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useCalendarState } from "@react-stately/calendar";
 import type { AriaCalendarProps} from "@react-aria/calendar";
 import { useCalendar } from "@react-aria/calendar";
 import { useLocale } from "@react-aria/i18n";
-import { createCalendar } from "@internationalized/date";
+import { createCalendar, parseDate } from "@internationalized/date";
 import { CalendarGrid } from "./CalendarGrid";
 import { CalendarHeader } from "./CalendarHeader";
 import type { DateValue } from "@react-types/calendar";
@@ -12,7 +12,7 @@ export const Calendar = (props: AriaCalendarProps<DateValue>) => {
   const { locale } = useLocale();
   const state = useCalendarState({
     ...props,
-    visibleDuration: { months: 2 },
+    visibleDuration: { months: 1 },
     locale,
     createCalendar
   });
@@ -21,7 +21,6 @@ export const Calendar = (props: AriaCalendarProps<DateValue>) => {
   const { calendarProps, prevButtonProps, nextButtonProps } = useCalendar(
     props,
     state,
-    // ref
   );
 
   return (
@@ -34,7 +33,6 @@ export const Calendar = (props: AriaCalendarProps<DateValue>) => {
       />
       <div className="flex gap-8">
         <CalendarGrid state={state} />
-        <CalendarGrid state={state} offset={{ months: 1 }} />
       </div>
     </div>
   );

@@ -2,7 +2,7 @@ import { useRef } from "react";
 import type { AriaCalendarCellProps} from "@react-aria/calendar";
 import { useCalendarCell } from "@react-aria/calendar";
 import { useLocale } from "@react-aria/i18n";
-import { isSameDay, getDayOfWeek, isSameMonth } from "@internationalized/date";
+import { isSameDay, getDayOfWeek, isSameMonth, CalendarDate } from "@internationalized/date";
 import { useFocusRing } from "@react-aria/focus";
 import { mergeProps } from "@react-aria/utils";
 import type { CalendarState, RangeCalendarState } from "@react-stately/calendar";
@@ -20,7 +20,7 @@ export const CalendarCell = ({ state, date, currentMonth }: CalendarCellProps) =
     buttonProps,
     isSelected,
     isDisabled,
-    formattedDate
+    formattedDate,
   } = useCalendarCell({ date }, state, ref);
 
   const isOutsideMonth = !isSameMonth(currentMonth, date);
