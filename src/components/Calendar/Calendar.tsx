@@ -1,9 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useCalendarState } from "@react-stately/calendar";
 import type { AriaCalendarProps} from "@react-aria/calendar";
 import { useCalendar } from "@react-aria/calendar";
 import { useLocale } from "@react-aria/i18n";
-import { createCalendar, parseDate } from "@internationalized/date";
+import { createCalendar } from "@internationalized/date";
 import { CalendarGrid } from "./CalendarGrid";
 import { CalendarHeader } from "./CalendarHeader";
 import type { DateValue } from "@react-types/calendar";

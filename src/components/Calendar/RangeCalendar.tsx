@@ -1,11 +1,13 @@
 import { useRef } from "react";
-import { RangeCalendarStateOptions, useRangeCalendarState } from "@react-stately/calendar";
-import { AriaRangeCalendarProps, useRangeCalendar } from "@react-aria/calendar";
+import type { RangeCalendarStateOptions} from "@react-stately/calendar";
+import { useRangeCalendarState } from "@react-stately/calendar";
+import type { AriaRangeCalendarProps} from "@react-aria/calendar";
+import { useRangeCalendar } from "@react-aria/calendar";
 import { useLocale } from "@react-aria/i18n";
 import { createCalendar } from "@internationalized/date";
 import { CalendarGrid } from "./CalendarGrid";
 import { CalendarHeader } from "./CalendarHeader";
-import { DateValue } from "@react-types/calendar";
+import type { DateValue } from "@react-types/calendar";
 
 export function RangeCalendar(props: RangeCalendarStateOptions | AriaRangeCalendarProps<DateValue>) {
   const { locale } = useLocale();

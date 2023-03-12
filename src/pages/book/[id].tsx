@@ -5,26 +5,35 @@ import { api } from "@/utils/api";
 import type { Venue } from "@prisma/client";
 import { Calendar } from "@/components/Calendar/Calendar";
 import type { DateValue } from "@internationalized/date";
-import { getLocalTimeZone, isWeekend, today } from "@internationalized/date";
-import { useLocale } from "@react-aria/i18n";
+import { getLocalTimeZone, today } from "@internationalized/date";
+import { useState } from "react";
+import type { Draft } from "immer";
+import produce from "immer";
+import { atom,Provider, useAtom } from "jotai";
+import { dateValueAtom } from "stores/DateValueStore";
 
-export const BookVenue = ({ venue }: { venue: Venue }) => {
-  // const [date, setDate] = useState();
-  const now = today(getLocalTimeZone());
-  const disabledRanges = [
-    [now.add({ days: 14 }), now.add({ days: 16 })],
-    [now.add({ days: 23 }), now.add({ days: 24 })],
-  ];
+const BookVenue = ({ venue }: { venue: Venue }) => {
+  const [days, setDays] = useAtom(dateValueAtom);
 
-  const { locale } = useLocale();
-  const isDateUnavailable = (date: DateValue) =>
-    isWeekend(date, locale) ||
-    disabledRanges.some(
-      (interval) =>
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-ignore
-        date.compare(interval[0]) >= 0 && date.compare(interval[1]) <= 0
+  const handleAdd = (calendarDay: DateValue) => {
+    setDays(
+      produce((draft: Draft<DateValue>[]) => {
+        const selectedDay = draft.find(
+          (selectedDay) =>
+            JSON.stringify(selectedDay) === JSON.stringify(calendarDay)
+        );
+        if (selectedDay) {
+          console.log("selectedDay", selectedDay)
+          draft = draft.filter(
+            (selectedDay) =>
+              JSON.stringify(selectedDay) !== JSON.stringify(calendarDay)
+          );
+        }
+        draft.push(calendarDay);
+
+      })
     );
+  };
 
   return (
     <>
@@ -45,11 +54,16 @@ export const BookVenue = ({ venue }: { venue: Venue }) => {
           </div>
         </div>
         <Calendar
-          // value={date} onChange={(value) => {dateList.push(value); setDateList(dateList)}}
           aria-label="Appointment date"
           minValue={today(getLocalTimeZone())}
-          isDateUnavailable={isDateUnavailable}
         />
+        <div>
+          {days.map((day) => (
+            <div key={`${day.year}_${day.month}_${day.day}`}>
+              {JSON.stringify(day)}
+            </div>
+          ))}
+        </div>
       </div>
     </>
   );
@@ -62,7 +76,9 @@ const BookVenuePage = () => {
   if (!!venue) {
     return (
       <Layout>
-        <BookVenue venue={venue} />
+        <Provider>
+          <BookVenue venue={venue} />
+        </Provider>
       </Layout>
     );
   } else {

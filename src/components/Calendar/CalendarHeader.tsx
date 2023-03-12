@@ -2,9 +2,9 @@ import { useDateFormatter } from "@react-aria/i18n";
 import { Button } from "./Button";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { VisuallyHidden } from "@react-aria/visually-hidden";
-import { CalendarState, RangeCalendarState } from "@react-stately/calendar";
-import { AriaButtonProps } from "@react-types/button";
-import { DOMAttributes } from "@react-types/shared/src/dom";
+import type { CalendarState, RangeCalendarState } from "@react-stately/calendar";
+import type { AriaButtonProps } from "@react-types/button";
+import type { DOMAttributes } from "@react-types/shared/src/dom";
 
 interface CalendarHeaderProps {
   state: CalendarState | RangeCalendarState;
